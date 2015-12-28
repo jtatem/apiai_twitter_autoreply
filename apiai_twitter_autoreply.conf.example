@@ -1,0 +1,21 @@
+# api.ai keys
+
+CLIENT_ACCESS_TOKEN = '00000000000000000000000000000000'
+SUBSCRIPTION_KEY = '00000000-0000-0000-0000-000000000000'
+
+# twitter keys
+
+consumer_key = '0000000000000000000000000'
+consumer_secret = '00000000000000000000000000000000000000000000000000'
+access_key = '00000000000000000000000000000000000000000000000000'
+access_secret = '000000000000000000000000000000000000000000000'
+
+# other config
+
+check_interval = 60
+logfile = './apiai_twitter_autoreply.log'
+lastidfile = './apiai_twitter_autoreply_last-id'
+
+# ignore list
+
+ignorelist = ['BadUser1', 'BadUser2']
