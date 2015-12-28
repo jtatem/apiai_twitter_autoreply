@@ -19,4 +19,8 @@ lastidfile = './apiai_twitter_autoreply_last-id'
 
 # ignore list
 
-ignorelist = ['BadUser1', 'BadUser2']
+ignorelist = ['BadUser1', 'BadUser2', twitter_screen_name]
+
+# Fallback respone option list
+
+fallbackresplist = ['Sorry, I can\'t figure that out.']

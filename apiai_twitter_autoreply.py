@@ -4,6 +4,7 @@ import apiai
 import json
 import sys
 import os
+import random
 
 # Load configs
 
@@ -53,8 +54,8 @@ def post_reply(reqstr, requsr, replytoid):
   airesp = ai_text_req(reqstr)
   resptxt = airesp['result']['fulfillment']['speech']
   if resptxt == '':
-    logwrite('Empty response from api.ai for text "{}", falling back to default response'.format(reqstr)) 
-    resptxt = 'Sorry, I can\'t figure that out.'
+    logwrite('Empty response from api.ai for text "{}", falling back to a default response'.format(reqstr)) 
+    resptxt = random.choice(fallbackresplist)
   post_str = '@{} {}'.format(requsr, resptxt)
   logwrite('Posting in reply to {} with text: {}'.format(requsr, resptxt))
   return post_ai(post_str, replytoid)
