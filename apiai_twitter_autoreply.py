@@ -53,14 +53,15 @@ def post_reply(reqstr, requsr, replytoid):
   airesp = ai_text_req(reqstr)
   resptxt = airesp['result']['fulfillment']['speech']
   if resptxt == '':
-    logwrite('Empty response from api.ai for text "{}", falling back to default response') 
+    logwrite('Empty response from api.ai for text "{}", falling back to default response'.format(reqstr)) 
     resptxt = 'Sorry, I can\'t figure that out.'
   post_str = '@{} {}'.format(requsr, resptxt)
-  logwrite('Posting in reply to {} with text {}'.format(requsr, resptxt))
+  logwrite('Posting in reply to {} with text: {}'.format(requsr, resptxt))
   return post_ai(post_str, replytoid)
 
 
 if __name__ == '__main__':
+  logwrite('Starting up')
   if os.path.exists(lastidfile):
     f = open(lastidfile, 'r')
     last_id = int(f.read().rstrip())
@@ -69,22 +70,25 @@ if __name__ == '__main__':
   else:
     last_id = None
     logwrite('No last ID file found, starting from the beginning')
+  try:
+    while True:
+      logwrite('Getting recent @ mentions')
+      statuslist = get_mentions(sinceId=last_id)
+      logwrite('Got {} @ mentions'.format(len(statuslist)))
+      for i in range(len(statuslist) - 1, -1, -1):
+        post_user = statuslist[i].user.screen_name
+        post_id = statuslist[i].id
+        last_id = post_id
+        post_text = statuslist[i].text.replace('@' + twitter_screen_name, '')
+        if post_user not in ignorelist:
+          logwrite('Found post ID {} from user {} with text: {}'.format(post_id, post_user, post_text))
+          post_reply(post_text, post_user, post_id)     
+        else:
+          logwrite('Ignoring post ID {} from user {}'.format(post_id, post_user))     
+      f = open(lastidfile, 'w')
+      f.write(str(last_id) + '\n')
+      f.close()
+      time.sleep(check_interval)
+  except KeyboardInterrupt:
+    logwrite('Keyboard interrupt received, shutting down')
 
-  while True:
-    logwrite('Getting recent @ mentions')
-    statuslist = get_mentions(sinceId=last_id)
-    logwrite('Got {} @ mentions'.format(len(statuslist)))
-    for i in range(len(statuslist) - 1, -1, -1):
-      post_user = statuslist[i].user.screen_name
-      post_id = statuslist[i].id
-      last_id = post_id
-      post_text = statuslist[i].text.split(' ', 1)[1]
-      if post_user not in ignorelist:
-        logwrite('Found post ID {} from user {} with text: {}'.format(post_id, post_user, post_text))
-        post_reply(post_text, post_user, post_id)     
-      else:
-        logwrite('Ignoring post ID {} from user {}'.format(post_id, post_user))     
-    f = open(lastidfile, 'w')
-    f.write(str(last_id) + '\n')
-    f.close()
-    time.sleep(check_interval)
