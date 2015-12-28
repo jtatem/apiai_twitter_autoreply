@@ -13,7 +13,7 @@ access_secret = '000000000000000000000000000000000000000000000'
 
 # other config
 
-check_interval = 60
+check_interval = 120
 logfile = './apiai_twitter_autoreply.log'
 lastidfile = './apiai_twitter_autoreply_last-id'
 
